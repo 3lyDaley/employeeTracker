@@ -4,8 +4,7 @@ const employee_db = mysql.createConnection({
   host: 'localhost',
   // Your MySQL username,
   user: 'root',
-  // Your MySQL password
-  password: process.env.MYSQL_PASSWORD,
+  password: '?2rKeKTJR?',
   database: 'employee_db'
 });
 

@@ -1,0 +1,30 @@
+{
+  "name": "employeetracker",
+  "version": "1.0.0",
+  "description": "## Description",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3lyDaley/employeeTracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/3lyDaley/employeeTracker/issues"
+  },
+  "homepage": "https://github.com/3lyDaley/employeeTracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-router": "^0.0.1",
+    "fs": "^0.0.1-security",
+    "inquirer": "^8.2.4",
+    "mysql2": "^2.3.3"
+  }
+}
