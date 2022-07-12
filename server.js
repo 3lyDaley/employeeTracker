@@ -1,6 +1,6 @@
 const express = require('express');
 const db = require('./db/connection');
-// const apiRoutes = require('./routes/apiRoutes');
+const apiRoutes = require('./routes/apiRoutes');
 const fs = require('fs');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
@@ -12,7 +12,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-
+app.use('/api', apiRoutes);
 
 // Start server after DB connection
 db.connect(err => {
@@ -24,7 +24,7 @@ db.connect(err => {
   });
 });
 
-const employeePrompt = () => {
+function employeePrompt() {
   inquirer.prompt ({
     type: 'list',
     name: 'menu',
@@ -40,5 +40,14 @@ const employeePrompt = () => {
       "Exit"
     ]
   })
+  .then(userSelect => {
+    switch (userSelect.menu) {
+      case 'View Departments':
+        viewDepartments();
+        break;
+    }
+  })
 }
+
+
 
