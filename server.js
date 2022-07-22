@@ -1,6 +1,6 @@
 const express = require('express');
 const db = require('./db/connection');
-const apiRoutes = require('./routes/apiRoutes');
+
 const fs = require('fs');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
@@ -12,7 +12,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use('/api', apiRoutes);
+
 
 // Start server after DB connection
 db.connect(err => {
@@ -25,7 +25,7 @@ db.connect(err => {
 });
 
 function employeePrompt() {
-  inquirer.prompt ({
+  inquirer.prompt ([{
     type: 'list',
     name: 'menu',
     message: 'Choose one to continue:',
@@ -39,15 +39,105 @@ function employeePrompt() {
       "Update Role",
       "Exit"
     ]
-  })
+  }])
   .then(userSelect => {
     switch (userSelect.menu) {
       case 'View Departments':
         viewDepartments();
         break;
+      case 'View Roles':
+        viewRoles();
+        break;
+      case 'View Employees':
+        viewEmployees();
+        break;
+      default: process.exit();
     }
   })
 }
 
 
 
+viewDepartments = () => {
+  db.query(
+    'SELECT * FROM department;',
+    (err, results) => {
+      console.table(results);
+      inquirer.prompt([{
+        type: 'list',
+        name: 'menu',
+        message: 'Would you like to return to main menu or exit?',
+        choices: [
+          "Main Menu",
+          "Exit"
+        ]
+      }])
+        .then(userSelect => {
+          switch (userSelect.menu) {
+            case 'Main Menu':
+              employeePrompt();
+              break;
+            case 'Exit':
+              console.log("Goodbye!")
+              process.exit();
+            }
+          })
+    }
+  );
+}
+
+viewRoles = () => {
+  db.query(
+    'SELECT * FROM roles;',
+    (err, results) => {
+      console.table(results);
+      inquirer.prompt([{
+        type: 'list',
+        name: 'menu',
+        message: 'Would you like to return to main menu or exit?',
+        choices: [
+          "Main Menu",
+          "Exit"
+        ]
+      }])
+        .then(userSelect => {
+          switch (userSelect.menu) {
+            case 'Main Menu':
+              employeePrompt();
+              break;
+            case 'Exit':
+              console.log("Goodbye!")
+              process.exit();
+          }
+        })
+    }
+  )
+};
+
+viewEmployees = () => {
+  db.query(
+    'SELECT * FROM employees;',
+    (err, results) => {
+      console.table(results);
+      inquirer.prompt([{
+        type: 'list',
+        name: 'menu',
+        message: 'Would you like to return to main menu or exit?',
+        choices: [
+          "Main Menu",
+          "Exit"
+        ]
+      }])
+        .then(userSelect => {
+          switch (userSelect.menu) {
+            case 'Main Menu':
+              employeePrompt();
+              break;
+            case 'Exit':
+              console.log("Goodbye!")
+              process.exit();
+          }
+        })
+    }  
+  )
+};

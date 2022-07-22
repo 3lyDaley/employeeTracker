@@ -20,7 +20,7 @@ VALUES
 ('Media consultant', 160000, 4);
 
 INSERT INTO employees
-(first_name, last_name, role_id, manager_id)
+(first_name, last_name, manager_id, role_id)
 VALUES
 ('Sandy', 'Powell', 1, 1),
 ('Emil', 'Zola', 2, 2),
