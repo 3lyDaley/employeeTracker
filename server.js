@@ -269,41 +269,39 @@ addEmployee = (roles) => {
       }
     }
   ]).then(employeeData => {
+    let employee = [];
+    let first_name = employeeData.first_name;
+    let last_name = employeeData.last_name;
+
+    employee.push(first_name, last_name);
     
-    db.query(`SELECT role.id, role.role_title FROM roles`, (results) => {
-      const employeeArr = [employeeData.first_name, employeeData.last_name];
-      const roles = results.map(({id, role_title}) => ({name: role_title, value: id}));
+    db.query(`SELECT role_title, id FROM roles`, (err, results) => {
+      const roles = results.map(({ role_title, id }) => ({ name: role_title, value: id}));
+
       inquirer.prompt([
         {
           type: 'list',
-          name: 'roleTitle',
-          message: "What is this employee's role?",
+          name: 'role',
+          message: 'What is the employee role?',
           choices: roles
         }
-      ]).then(roleTitleChoice => {
-        let role = roleTitleChoice.roleTitle;
-        employeeArr.push(role)
+      ]).then(roleChoice => {
+        let role = roleChoice.role;
+        employee.push(role);
+
+        db.query(`SELECT * FROM employees WHERE manager_id IS NULL`, (err, results) => {
+          const managers = results.map(({ first_name, last_name, id }) => ({ name: first_name + " " +last_name, value: id }));
+        })
+        
+        
+        // db.query(`INSERT INTO employees (first_name, last_name, role_id) VALUE (?, ?, ?)`, employee, (err, result) => {
+        //   if (err) throw err;
+
+        //   viewEmployees();
+        // })
+
       })
     })
-  }).then((employeeArr) => {
-    db.promise().query(`INSERT INTO employees ( first_name, last_name, role_id) VALUES (?, ?, ?)`, employeeArr, (err, results) => {
-      if (err) throw err;
-      console.log(results)
-    })  
   })
-}  
-
-
-        // db.query(
-        //   "INSERT INTO roles SET ?", {
-        //   first_name: employeeData.first_name,
-        //   last_name: employeeData.last_name,
-        //   salary: employeeData.salary,
-        //   department_id: rData.department_id
-        // }, (err) => {
-        //   if (err) throw err;
-        //   console.log("=================================")
-        //   console.log("==    *    Role Added!    *    ==")
-        //   console.log("=================================")
-        //   viewRoles();
-        // })
+}
+  

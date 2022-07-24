@@ -22,23 +22,10 @@ VALUES
 INSERT INTO employees
 (first_name, last_name, manager_id, role_id)
 VALUES
-('Sandy', 'Powell', 1, 1),
+('Sandy', 'Powell', null, 1),
 ('Emil', 'Zola', 2, 2),
 ('Sissy', 'Coalpits', 3, 2),
-('Antoinette', 'Capet', 3, 2),
+('Antoinette', 'Capet', null, 2),
 ('Samuel', 'Delany', 3, 2),
 ('Tony', 'Duvert', 4, 4),
-('Dennis', 'Cooper', 5, 4 ),
-('Monica', 'Bellucci', 6, 4),
-('George', 'Shaw', 6, 4),
-('Arnold', 'Bennett', 6, 4),
-('Algernon', 'Blackwood', 7, 7 ),
-('Rhoda', 'Broughton', 8, 7),
-('Hart', 'Crane', 8, 7),
-('Vitorio', 'DeSica', 9, 7),
-('Wilkie', 'Collins', 9, 7),
-('Elizabeth', 'Gaskell', 8, 7 ),
-('George', 'Sand', 3, 2),
-('Vernon', 'Lee', 6, 4),
-('Arthur', 'Machen', 6, 4),
-('Samuel', 'Johnson', 3, 2);
+
