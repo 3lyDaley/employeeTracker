@@ -240,7 +240,7 @@ addRole = () => {
   })
 }
 
-addEmployee = () => {
+addEmployee = (roles) => {
   inquirer.prompt([
     {
       type: 'input',
@@ -267,61 +267,43 @@ addEmployee = () => {
           return false;
         }
       }
-    },
-    {
-      type: 'input',
-      name: 'manager_id',
-      message: "What is the ID of this employee's Manager?"
-    },
-    {
-      type: 'list',
-      name: "roleConfirmExists",
-      message: "Does this employee have a new or existing role in the company?",
-      choices: ['New', 'Existing'],
-      default: 'Existing'
-    },
-    {
-      type: 'input',
-      name: 'role_id',
-      message: "What is this employee's role id?",
-      when: (answers) => answers.roleConfirmExists === 'Existing',
-      validate: role_idInput => {
-        if (role_idInput) {
-          return true;
-        } else {
-          console.log("Please enter the role ID.")
-          return false;
-        }
-      }
-    },
-    {
-      type: 'confirm',
-      name: 'newRole',
-      message: 'Please confirm the employee\'s role does not yet exist.',
-      when: (answers) => answers.roleConfirmExists === 'New',
-      validate: newRole => {
-        if (newRole) {
-          console.log("Please submit new role prior to new employee")
-          return false;
-
-      }
     }
-
-    }
-    
   ]).then(employeeData => {
-    db.query(
-      "INSERT INTO employees SET ?", {
-        first_name: employeeData.first_name,
-        last_name: employeeData.last_name,
-        manager_id: employeeData.manager_id,
-        role_id: employeeData.role_id
-    }, (err) => {
-      if (err) throw err;
-      console.log("=====================================")
-      console.log("==    *    Employee Added!    *    ==")
-      console.log("=====================================")
-      viewEmployees();
+    
+    db.query(`SELECT role.id, role.role_title FROM roles`, (results) => {
+      const employeeArr = [employeeData.first_name, employeeData.last_name];
+      const roles = results.map(({id, role_title}) => ({name: role_title, value: id}));
+      inquirer.prompt([
+        {
+          type: 'list',
+          name: 'roleTitle',
+          message: "What is this employee's role?",
+          choices: roles
+        }
+      ]).then(roleTitleChoice => {
+        let role = roleTitleChoice.roleTitle;
+        employeeArr.push(role)
+      })
     })
+  }).then((employeeArr) => {
+    db.promise().query(`INSERT INTO employees ( first_name, last_name, role_id) VALUES (?, ?, ?)`, employeeArr, (err, results) => {
+      if (err) throw err;
+      console.log(results)
+    })  
   })
-}
+}  
+
+
+        // db.query(
+        //   "INSERT INTO roles SET ?", {
+        //   first_name: employeeData.first_name,
+        //   last_name: employeeData.last_name,
+        //   salary: employeeData.salary,
+        //   department_id: rData.department_id
+        // }, (err) => {
+        //   if (err) throw err;
+        //   console.log("=================================")
+        //   console.log("==    *    Role Added!    *    ==")
+        //   console.log("=================================")
+        //   viewRoles();
+        // })
