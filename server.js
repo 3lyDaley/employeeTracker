@@ -36,7 +36,8 @@ function employeePrompt() {
       "Add a department",
       "Add a role",
       "Add an employee",
-      "Update Role",
+      "Update Employee Role",
+      "Update Employee Manager",
       "Exit"
     ]
   }])
@@ -59,6 +60,12 @@ function employeePrompt() {
         break;
       case 'Add an employee':
         addEmployee();
+        break;
+      case 'Update Employee Role':
+        updateEmployeeRole()
+        break;
+      case 'Update Employee Manager':
+        updateEmployeeManager();
         break;
       default: process.exit();
     }
@@ -210,37 +217,43 @@ addRole = () => {
           return false;
         }
       }
-    },
-    {
-      type: 'input',
-      name: 'department_id',
-      message: "What is the ID of this role's department?",
-      validate: department_idInput => {
-        if (department_idInput) {
-          return true;
-        } else {
-          console.log("Please enter the Department ID.")
-          return false;
-        }
-      }
-    }
-  ]).then(roleData => {
-    db.query(
-      "INSERT INTO roles SET ?", {
-      role_title: roleData.role_title,
-      salary: roleData.salary,
-      department_id: roleData.department_id
-    }, (err) => {
-      if (err) throw err;
-      console.log("=================================")
-      console.log("==    *    Role Added!    *    ==")
-      console.log("=================================")
-      viewRoles();
+    }]).then(roleData => {
+  
+      // ADD ALREADY-COLLECTED DATA TO ARRAY
+      let role_title = roleData.role_title;
+      let salary = roleData.salary;
+      
+      // FIND ROLES FOR EMPLOYEE ROLE CHOICES
+      db.query(`SELECT * FROM department`, (err, results) => {
+        const depts = results.map(({ department_name, id }) => ({ name: department_name, value: id }));
+
+      inquirer.prompt([
+      {
+        type: 'list',
+        name: 'department',
+        message: "What department does this role belong to?",
+        choices: depts
+
+      }]).then(roleData => {
+         
+        db.query(
+          "INSERT INTO roles SET ?", {
+          role_title: role_title,
+          salary: salary,
+          department_id: roleData.department
+        }, (err) => {
+          if (err) throw err;
+          console.log("=================================")
+          console.log("==    *    Role Added!    *    ==")
+          console.log("=================================")
+          viewRoles();
+        })
+      })
     })
-  })
+  })  
 }
 
-addEmployee = (roles) => {
+addEmployee = () => {
   inquirer.prompt([
     {
       type: 'input',
@@ -269,12 +282,15 @@ addEmployee = (roles) => {
       }
     }
   ]).then(employeeData => {
+    // CREATE EMPTY EMPLOYEE ARRAY TO ADD NAME, ROLE, AND MANAGER TO
     let employee = [];
+
+    // ADD ALREADY-COLLECTED DATA TO ARRAY
     let first_name = employeeData.first_name;
     let last_name = employeeData.last_name;
-
     employee.push(first_name, last_name);
-    
+
+    // FIND ROLES FOR EMPLOYEE ROLE CHOICES
     db.query(`SELECT role_title, id FROM roles`, (err, results) => {
       const roles = results.map(({ role_title, id }) => ({ name: role_title, value: id}));
 
@@ -286,22 +302,125 @@ addEmployee = (roles) => {
           choices: roles
         }
       ]).then(roleChoice => {
+        // PUSH THE ROLE CHOICE'S ID TO EMPLOYEE'S ARRAY
         let role = roleChoice.role;
         employee.push(role);
+// GET MANAGER INFO BY FINDING NULL MANAGER_IDS
+    db.query(`SELECT id, CONCAT(first_name, ' ', last_name)AS name FROM employees WHERE manager_id IS NULL`, (err, results) => {
+    
+      const managers = results.map(({ name, id }) => ({ name: name, value: id }));
+      
+      inquirer.prompt([
+        {
+          type: 'list',
+          name: 'manager',
+          message: 'Who is the employee\'s manager?',
+          choices: [...managers, "NULL"]
+        }
+      ]).then(managerChoice => {
+        let manager = managerChoice.manager;
+        employee.push(manager)
 
-        db.query(`SELECT * FROM employees WHERE manager_id IS NULL`, (err, results) => {
-          const managers = results.map(({ first_name, last_name, id }) => ({ name: first_name + " " +last_name, value: id }));
+        db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUE (?, ?, ?, ?)`, employee, 
+          (err) => {
+            if (err) throw err;
+            console.log("=====================================")
+            console.log("==    *    Employee Added!    *    ==")
+            console.log("=====================================")
+          viewEmployees();
         })
-        
-        
-        // db.query(`INSERT INTO employees (first_name, last_name, role_id) VALUE (?, ?, ?)`, employee, (err, result) => {
-        //   if (err) throw err;
+      })
+      })
+    })
+  })
+})
+};
 
-        //   viewEmployees();
-        // })
+updateEmployeeRole = () => {
+  db.query(`SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM employees`, (err, results) => {
+    const employees = results.map(({name, id}) => ({ name: name, value: id}));
 
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'updateEmp',
+        message: 'Which employee would you like to update?',
+        choices: employees
+      }
+    ]).then(employeeChoice => {
+        let employee = employeeChoice.updateEmp
+
+      db.query(`SELECT role_title, id FROM roles`, (err, results) => {
+        const roles = results.map(({ role_title, id }) => ({ name: role_title, value: id }));
+
+        inquirer.prompt([
+          {
+            type: 'list',
+            name: 'role',
+            message: 'What will be the employee\'s new role?',
+            choices: roles
+          }
+        ]).then(roleChoice => {
+          // PUSH THE ROLE CHOICE'S ID TO EMPLOYEE'S ARRAY
+          let employeeRole = roleChoice.role;
+          let employeeData = [employeeRole, employee]
+          
+          db.query(`UPDATE employees SET role_id = ? WHERE id = ?`, (employeeData), (err) => {
+            if (err) throw err;
+            console.log("=================================================")
+            console.log("          Updated employee " + employee +" role to "+ employeeRole+ "!          ")
+            console.log("=================================================")
+            viewEmployees();
+          })
+        })
+      })
+    })
+  })
+};
+
+updateEmployeeManager = () => {
+  db.query(`SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM employees`, (err, results) => {
+    const employees = results.map(({ name, id }) => ({ name: name, value: id }));
+
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'updateEmp',
+        message: 'Which employee would you like to update?',
+        choices: employees
+      }
+    ]).then(employeeChoice => {
+      let employee = employeeChoice.updateEmp
+
+      db.query(`SELECT id, CONCAT(first_name, ' ', last_name)AS name FROM employees WHERE manager_id IS NULL`, (err, results) => {
+
+        const managers = results.map(({ name, id }) => ({ name: name, value: id }));
+
+        inquirer.prompt([
+          {
+            type: 'list',
+            name: 'manager',
+            message: 'Who is the employee\'s manager?',
+            choices: [...managers, "NULL"]
+          }
+        ]).then(managerChoice => {
+          let manager = managerChoice.manager;
+          let employeeData = [manager, employee]
+
+          db.query(`UPDATE employees SET manager_id = ? WHERE id = ?`, (employeeData),
+            (err) => {
+              if (err) throw err;
+              console.log("=============================================================")
+              console.log("==    *    Employee " + employee + " new manager's ID is now " + manager + "    *    ==")
+              console.log("=============================================================")
+              viewEmployees();
+          })
+        })
       })
     })
   })
 }
+
+      
+
   
