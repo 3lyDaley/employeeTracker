@@ -1,17 +1,11 @@
 # MySQL Employee Tracker
 
-
-
-# Employee Tracker
-
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
 
-
-
 ----------------------------------------------------------
- Command-line generator of mySQL employee database. 
+ Command-line created mySQL employee database. 
  
  ## Contents
  
@@ -85,10 +79,12 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ## Demos
 
-### Inquirer Demo
+
+https://user-images.githubusercontent.com/100460009/180697811-4e757f09-bb09-4bdc-8827-01f9c8b5804e.mp4
 
 
-https://user-images.githubusercontent.com/100460009/180368101-42a507c3-a5f2-4631-89ba-0f2624f27b4b.mp4
+
+https://user-images.githubusercontent.com/100460009/180697820-085385f9-f803-453f-ae9a-3231fdad2953.mp4
 
 
 _______________________________________________________________
@@ -99,6 +95,9 @@ _______________________________________________________________
 
 ## Command Line Visuals
 
+![openingPrompt](https://user-images.githubusercontent.com/100460009/180697835-5e2638ae-c76f-44cb-94bd-262eddba7b86.png)
+![views](https://user-images.githubusercontent.com/100460009/180697845-b56ae493-f0b1-46a5-ab8c-4f27a7f9e1b6.png)
+![addEmployee](https://user-images.githubusercontent.com/100460009/180697853-0b721ad1-29af-4bf1-8b78-0c8cb2a770d9.png)
 
 ## License
 
