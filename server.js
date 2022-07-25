@@ -33,6 +33,8 @@ function employeePrompt() {
       "View Departments",
       "View Roles",
       "View Employees",
+      "View Employees By Manager",
+      "View Employees by Department",
       "Add a department",
       "Add a role",
       "Add an employee",
@@ -52,6 +54,12 @@ function employeePrompt() {
       case 'View Employees':
         viewEmployees();
         break;
+      case "View Employees By Manager":
+        viewEmpByMan();
+        break;
+      case "View Employees by Department":
+        viewEmpByDept();
+        break;
       case 'Add a department':
         addDept();
         break;
@@ -67,12 +75,15 @@ function employeePrompt() {
       case 'Update Employee Manager':
         updateEmployeeManager();
         break;
+      
       default: process.exit();
     }
   })
 }
 
-
+// ==========================================================================
+// ================================ VIEWS ===================================
+// ==========================================================================
 
 viewDepartments = () => {
   db.query(
@@ -159,6 +170,74 @@ viewEmployees = () => {
   )
 };
 
+viewEmpByMan = () => {
+  db.query(`SELECT manager_id, GROUP_CONCAT(first_name, ' ', last_name SEPARATOR ", ") AS "Manages" FROM employees GROUP BY manager_id`, (err, results) => {
+    if (err) throw err;
+    console.log(`\n`)
+    console.table(results);
+    console.log(`\n`)
+    console.log('* NULL row contains all Managers')
+    console.log(`\n`)
+
+    inquirer.prompt([{
+      type: 'list',
+      name: 'menu',
+      message: 'Would you like to return to main menu or exit?',
+      choices: [
+        "Main Menu",
+        "Exit"
+      ]
+    }])
+      .then(userSelect => {
+        switch (userSelect.menu) {
+          case 'Main Menu':
+            employeePrompt();
+            break;
+          case 'Exit':
+            console.log("Goodbye!")
+            process.exit();
+        }
+      })
+  }
+  )
+}
+
+viewEmpByDept = () => {
+  db.query(`SELECT GROUP_CONCAT(DISTINCT department.department_name) AS 'Department', GROUP_CONCAT(concat(employees.first_name, ' ', employees.last_name) SEPARATOR ', ') AS 'Employees'
+FROM employees JOIN roles ON roles.role_id = employees.role_id JOIN department ON department.department_id = roles.department_id GROUP BY department.department_name;`, (err, results) => {
+    if (err) throw err;
+    console.log(`\n`)
+    console.table(results);
+    console.log(`\n`)
+    console.log(`\n`)
+
+    inquirer.prompt([{
+      type: 'list',
+      name: 'menu',
+      message: 'Would you like to return to main menu or exit?',
+      choices: [
+        "Main Menu",
+        "Exit"
+      ]
+    }])
+      .then(userSelect => {
+        switch (userSelect.menu) {
+          case 'Main Menu':
+            employeePrompt();
+            break;
+          case 'Exit':
+            console.log("Goodbye!")
+            process.exit();
+        }
+      })
+  }
+  )
+}
+
+// ==========================================================================
+// ================================== ADDS ==================================
+// ==========================================================================
+
 addDept = () => {
   inquirer.prompt([
     {
@@ -188,7 +267,9 @@ addDept = () => {
       viewDepartments();
       })
     })
-}
+};
+
+
 
 addRole = () => {
   inquirer.prompt([
@@ -225,7 +306,7 @@ addRole = () => {
       
       // FIND ROLES FOR EMPLOYEE ROLE CHOICES
       db.query(`SELECT * FROM department`, (err, results) => {
-        const depts = results.map(({ department_name, id }) => ({ name: department_name, value: id }));
+        const depts = results.map(({ department_name, department_id }) => ({ name: department_name, value: department_id }));
 
       inquirer.prompt([
       {
@@ -292,7 +373,7 @@ addEmployee = () => {
 
     // FIND ROLES FOR EMPLOYEE ROLE CHOICES
     db.query(`SELECT role_title, id FROM roles`, (err, results) => {
-      const roles = results.map(({ role_title, id }) => ({ name: role_title, value: id}));
+      const roles = results.map(({ role_title, role_id }) => ({ name: role_title, value: role_id}));
 
       inquirer.prompt([
         {
@@ -411,7 +492,7 @@ updateEmployeeManager = () => {
             (err) => {
               if (err) throw err;
               console.log("=============================================================")
-              console.log("==    *    Employee " + employee + " new manager's ID is now " + manager + "    *    ==")
+              console.log("==    *    Employee " + employee + "'s new manager's ID is now " + manager + "    *    ==")
               console.log("=============================================================")
               viewEmployees();
           })
@@ -421,6 +502,32 @@ updateEmployeeManager = () => {
   })
 }
 
-      
+
+// ==========================================================================
+// ================================ DELETES ===================================
+// ==========================================================================
+
+// Group employees by role then dept / view
+// SELECT role_id from employees
+// SELECT department_id from roles
+// GROUP role_titles BY department_id
+// Group those roles in employee table
+// display dept. name with employees who have roles in those departments
+
+// OR
+
+// first INNER JOIN department_name to roles table roles.department_name
+// then link the roles id from employee table to the roles.department_name
+// then show table with one column = department name and next column 
+// list of employees in that department 
+
+// Groups roles by department_id
+// SELECT GROUP_CONCAT(DISTINCT department.department_name) AS 'Department', GROUP_CONCAT(concat(employees.first_name, ', ', employees.last_name)) AS 'Employees'
+// FROM employees 
+// JOIN roles ON roles.role_id = employees.role_id
+// JOIN department ON department.department_id = roles.department_id GROUP BY department.department_name;
+
+
+// delete dept, roles, employees
 
   

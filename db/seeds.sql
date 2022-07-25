@@ -17,8 +17,8 @@ VALUES
 ('Junior Accountant', 60305, 3),
 ('PR manager', 180000, 4),
 ('Social Media Intern', 32000, 4),
-('Media consultant', 160000, 4)
-('MGMT', 0000, );
+('Media consultant', 160000, 4);
+
 
 INSERT INTO employees
 (first_name, last_name, manager_id, role_id)
