@@ -1,6 +1,34 @@
 # MySQL Employee Tracker
 
+
+
+# Employee Tracker
+
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
+
+
+
+----------------------------------------------------------
+ Command-line generator of mySQL employee database. 
+ 
+ ## Contents
+ 
+ - [Description](#description)
+    - [User Story](#user-story)
+    - [Acceptance Criteria](#acceptance-criteria)
+ - [Dependencies](#dependencies)
+ - [Installation Instructions](#installing)
+ - [Execution](#executing-program)
+ - [Inquirer Demo](#inquirer-demo)
+ - [Screenshots](#command-line-visuals)
+ - [Authors](#authors)
+ - [License](#license)
+
 ## Description
+
+This employee tracker uses mySQL and Inquirer to complete a comprehensive list of employees, management, and various roles and departments within a company. The tables are structured such that departments, roles, and employees each have their own table, but are connected through each employee's role ID, which corresponds to respective department IDs. Every component is entered through an Inquirer prompt by the user. The user is able to Add and Delete departments, roles, and employees, as well as updating employee roles or managers. THere is also the option to view each table, (Departments, Roles, and Employees) along with a manager table that displays the manager and their team, or a department table which displays all employees in each department. Users may also store data in a seed file and source that into the employee database. 
 
 ### User Story
 
@@ -34,3 +62,48 @@ and that employee is added to the database
 WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 ```
+### Dependencies
+```
+"console.table": "^0.10.0",
+"dotenv": "^16.0.1",
+"express": "^4.18.1",
+"express-router": "^0.0.1",
+"fs": "^0.0.1-security",
+"inquirer": "^8.2.4",
+"mysql2": "^2.3.3"
+```
+### Installing
+
+* Fork this repo and clone to your machine
+* `npm i` to install all dependencies
+
+### Executing program
+
+* Open terminal in root
+* enter `npm i` in command line for dependencies
+* `node server.js` to display options list
+
+## Demos
+
+### Inquirer Demo
+
+
+https://user-images.githubusercontent.com/100460009/180368101-42a507c3-a5f2-4631-89ba-0f2624f27b4b.mp4
+
+
+_______________________________________________________________
+
+## Authors
+
+[Ely Daley](https://github.com/3lyDaley)
+
+## Command Line Visuals
+
+
+## License
+
+This project is licensed under the [MIT] License - see the LICENSE.md file for details
+
+
+
+
