@@ -40,6 +40,9 @@ function employeePrompt() {
       "Add an employee",
       "Update Employee Role",
       "Update Employee Manager",
+      "Delete a department",
+      "Delete a role",
+      "Delete an employee",
       "Exit"
     ]
   }])
@@ -75,7 +78,15 @@ function employeePrompt() {
       case 'Update Employee Manager':
         updateEmployeeManager();
         break;
-      
+      case 'Delete a department':
+        deleteDept()
+        break;
+      case 'Delete a role':
+        deleteRole();
+        break;
+      case 'Delete an employee':
+        deleteEmployee();
+        break;
       default: process.exit();
     }
   })
@@ -417,6 +428,10 @@ addEmployee = () => {
 })
 };
 
+// ==========================================================================
+// ================================ UPDATES =================================
+// ==========================================================================
+
 updateEmployeeRole = () => {
   db.query(`SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM employees`, (err, results) => {
     const employees = results.map(({name, id}) => ({ name: name, value: id}));
@@ -504,30 +519,83 @@ updateEmployeeManager = () => {
 
 
 // ==========================================================================
-// ================================ DELETES ===================================
+// ================================ DELETES =================================
 // ==========================================================================
 
-// Group employees by role then dept / view
-// SELECT role_id from employees
-// SELECT department_id from roles
-// GROUP role_titles BY department_id
-// Group those roles in employee table
-// display dept. name with employees who have roles in those departments
+deleteDept = () => {
+  db.query(`SELECT department_id, department_name FROM department`, (err, results) => {
+    const department = results.map(({ department_name, department_id }) => ({ name: department_name, value: department_name }));
 
-// OR
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'deleteDept',
+        message: 'Which department would you like to delete?',
+        choices: department
+      }
+    ]).then(deleteChoice => {
+      let deptDelete =deleteChoice.deleteDept
 
-// first INNER JOIN department_name to roles table roles.department_name
-// then link the roles id from employee table to the roles.department_name
-// then show table with one column = department name and next column 
-// list of employees in that department 
+          db.query(`DELETE FROM department WHERE department_name = ?`, (deptDelete), (err) => {
+            if (err) throw err;
+            console.log("=================================================")
+            console.log("          Deleted department " + deptDelete + "!          ")
+            console.log("=================================================")
+            viewDepartments();
+          })
+        })
+      })
+};
 
-// Groups roles by department_id
-// SELECT GROUP_CONCAT(DISTINCT department.department_name) AS 'Department', GROUP_CONCAT(concat(employees.first_name, ', ', employees.last_name)) AS 'Employees'
-// FROM employees 
-// JOIN roles ON roles.role_id = employees.role_id
-// JOIN department ON department.department_id = roles.department_id GROUP BY department.department_name;
+deleteRole = () => {
+  db.query(`SELECT role_title FROM roles`, (err, results) => {
+    const roles = results.map(({ role_title }) => ({ name: role_title, value: role_title }));
 
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'deleteRole',
+        message: 'Which role would you like to delete?',
+        choices: roles
+      }
+    ]).then(deleteChoice => {
+      let roleDelete = deleteChoice.deleteRole
 
+      db.query(`DELETE FROM roles WHERE role_title = ?`, (roleDelete), (err) => {
+        if (err) throw err;
+        console.log("=================================================")
+        console.log("          Deleted role " + roleDelete + "!          ")
+        console.log("=================================================")
+        viewRoles();
+      })
+    })
+  })
+};
+
+deleteEmployee = () => {
+  db.query(`SELECT id, concat(first_name, ' ', last_name) AS employee_name FROM employees`, (err, results) => {
+    const employee = results.map(({ id, employee_name }) => ({ name: employee_name, value: id }));
+
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'deleteEmployee',
+        message: 'Which employee would you like to delete?',
+        choices: employee
+      }
+    ]).then(deleteChoice => {
+      let employeeDelete = deleteChoice.deleteEmployee
+
+      db.query(`DELETE FROM employees WHERE id = ?`, (employeeDelete), (err) => {
+        if (err) throw err;
+        console.log("=================================================")
+        console.log("          Deleted  " + employeeDelete + " from employees!          ")
+        console.log("=================================================")
+        viewEmployees();
+      })
+    })
+  })
+};
 // delete dept, roles, employees
 
   
