@@ -589,7 +589,7 @@ deleteEmployee = () => {
       db.query(`DELETE FROM employees WHERE id = ?`, (employeeDelete), (err) => {
         if (err) throw err;
         console.log("=================================================")
-        console.log("          Deleted  " + employeeDelete + " from employees!          ")
+        console.log("                Employee Deleted!                ")
         console.log("=================================================")
         viewEmployees();
       })
