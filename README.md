@@ -89,14 +89,16 @@ https://user-images.githubusercontent.com/100460009/180697820-085385f9-f803-453f
 
 _______________________________________________________________
 
-## Authors
-
-[Ely Daley](https://github.com/3lyDaley)
 
 ## Command Line Visuals
 
 ![openingPrompt](https://user-images.githubusercontent.com/100460009/180697835-5e2638ae-c76f-44cb-94bd-262eddba7b86.png)
 ![views](https://user-images.githubusercontent.com/100460009/180697845-b56ae493-f0b1-46a5-ab8c-4f27a7f9e1b6.png)
 ![addEmployee](https://user-images.githubusercontent.com/100460009/180697853-0b721ad1-29af-4bf1-8b78-0c8cb2a770d9.png)
+
+
+## Authors
+
+Find my github profile here: [3lyDaley](https://github.com/3lyDaley)
 
 
