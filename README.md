@@ -18,7 +18,7 @@
  - [Inquirer Demo](#inquirer-demo)
  - [Screenshots](#command-line-visuals)
  - [Authors](#authors)
- - [License](#license)
+
 
 ## Description
 
@@ -98,11 +98,5 @@ _______________________________________________________________
 ![openingPrompt](https://user-images.githubusercontent.com/100460009/180697835-5e2638ae-c76f-44cb-94bd-262eddba7b86.png)
 ![views](https://user-images.githubusercontent.com/100460009/180697845-b56ae493-f0b1-46a5-ab8c-4f27a7f9e1b6.png)
 ![addEmployee](https://user-images.githubusercontent.com/100460009/180697853-0b721ad1-29af-4bf1-8b78-0c8cb2a770d9.png)
-
-## License
-
-This project is licensed under the [MIT] License - see the LICENSE.md file for details
-
-
 
 
