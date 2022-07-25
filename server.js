@@ -383,7 +383,7 @@ addEmployee = () => {
     employee.push(first_name, last_name);
 
     // FIND ROLES FOR EMPLOYEE ROLE CHOICES
-    db.query(`SELECT role_title, id FROM roles`, (err, results) => {
+    db.query(`SELECT role_title, role_id FROM roles`, (err, results) => {
       const roles = results.map(({ role_title, role_id }) => ({ name: role_title, value: role_id}));
 
       inquirer.prompt([
@@ -446,8 +446,8 @@ updateEmployeeRole = () => {
     ]).then(employeeChoice => {
         let employee = employeeChoice.updateEmp
 
-      db.query(`SELECT role_title, id FROM roles`, (err, results) => {
-        const roles = results.map(({ role_title, id }) => ({ name: role_title, value: id }));
+      db.query(`SELECT role_title, role_id FROM roles`, (err, results) => {
+        const roles = results.map(({ role_title, role_id }) => ({ name: role_title, value: role_id }));
 
         inquirer.prompt([
           {
@@ -461,7 +461,7 @@ updateEmployeeRole = () => {
           let employeeRole = roleChoice.role;
           let employeeData = [employeeRole, employee]
           
-          db.query(`UPDATE employees SET role_id = ? WHERE id = ?`, (employeeData), (err) => {
+          db.query(`UPDATE employees SET role_id = ? WHERE role_id = ?`, (employeeData), (err) => {
             if (err) throw err;
             console.log("=================================================")
             console.log("          Updated employee " + employee +" role to "+ employeeRole+ "!          ")
@@ -596,6 +596,5 @@ deleteEmployee = () => {
     })
   })
 };
-// delete dept, roles, employees
 
   
